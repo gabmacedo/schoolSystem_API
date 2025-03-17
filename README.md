@@ -10,5 +10,5 @@ unittest (para testes)<br>
 requests (para testes de API)<br>
 
 <h1>🎯 Observações</h1> 
- - O projeto não utiliza banco de dados, armazenando os dados em listas.
+ - O projeto não utiliza banco de dados, armazenando os dados em listas.<br>
  - Ele segue um modelo simples para fins acadêmicos.
