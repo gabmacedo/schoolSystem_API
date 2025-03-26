@@ -88,6 +88,55 @@ def criar_professor():
 def listar_professores():
     return jsonify(professores)
 
+@app.route('/professores/<int:professor_id>', methods=['GET'])
+def obter_professor(professor_id):
+    professor = next((p for p in professores 
+                      if p["id"] == professor_id), None)
+    
+    if professor is None:
+        return jsonify({"erro": "Professor não encontrado"}), 404
+    return jsonify(professor)
+
+@app.route('/professores/<int:professor_id>', methods=['PUT'])
+def atualizar_professor(professor_id):
+    dados = request.get_json()
+    professor = next((p for p in professores if p["id"] == professor_id), None)
+
+    if professor is None:
+        return jsonify
+
+    if "nome" in dados:
+        professor["nome"] = dados["nome"]
+    if "data_nascimento" in dados:
+        professor["data_nascimento"] = dados["data_nascimento"]
+    if "disciplina" in dados:
+        professor["disciplina"] = dados["disciplina"]
+    if "salario" in dados:
+        try:
+            professor["salario"] = float(dados["salario"])
+        except ValueError:
+            return jsonify({"erro": "O salario deve ser um número"}), 400
+        
+    return jsonify(professor), 200
+
+@app.route('/professores/<int:professor_id>', methods=['DELETE'])
+def excluir_professor(professor_id):
+    global professores
+    professor = next((p for p in professores 
+                      if p["id"] == professor_id), None)
+    
+    if professor is None:
+        return jsonify({"erro": "Professor não encontrado"}), 404
+    
+    professores = [p for p in professores
+                   if p["id"] != professor_id]
+    
+    for turma in turmas:
+        if turma["professor_id"] == professor_id:
+            turma["professor_id"] = None
+
+    return jsonify({"mensagem": "Professor excluido com sucesso"}), 200
+    
 #======================Turma===============================
 @app.route('/turmas', methods=['POST'])
 def criar_turma():
@@ -116,14 +165,12 @@ def criar_turma():
 def listar_turmas():
     return jsonify(turmas)
 
-@app.route('/turmas/<int:id>', methods=['DELETE'])
-def excluir_turma(id):
-    global turmas
-    turma = next((t for t in turmas if t["id"] == id), None)
+@app.route("/turmas/<int:turma_id>", methods=['GET'])
+def obter_turmas(turma_id):
+    turma = next((t for t in turmas if t["id"] == turma_id), None)
     if turma is None:
         return jsonify({"erro": "Turma não encontrada"}), 404
-    turmas = [t for t in turmas if t["id"] != id]
-    return jsonify({"mensagem": "Turma excluída com sucesso"}), 200
+    return jsonify(turma)
 
 @app.route('/turmas/<int:id>', methods=['PUT'])
 def atualizar_turma(id):
@@ -140,6 +187,15 @@ def atualizar_turma(id):
         turma["professor_id"] = dados["professor_id"]
 
     return jsonify(turma), 200
+
+@app.route('/turmas/<int:id>', methods=['DELETE'])
+def excluir_turma(id):
+    global turmas
+    turma = next((t for t in turmas if t["id"] == id), None)
+    if turma is None:
+        return jsonify({"erro": "Turma não encontrada"}), 404
+    turmas = [t for t in turmas if t["id"] != id]
+    return jsonify({"mensagem": "Turma excluída com sucesso"}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
