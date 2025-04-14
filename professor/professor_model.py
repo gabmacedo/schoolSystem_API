@@ -1,7 +1,7 @@
 dados = {
     "professores": [
-        {"id": 1, "nome": "Carlos", "idade": 40, "disciplina": "Matemática", "data_admissao": "2010-03-15", "turma_id": 1},
-        {"id": 2, "nome": "Ana", "idade": 35, "disciplina": "Português", "data_admissao": "2012-07-10", "turma_id": 2},
+        {"id":1, "nome": "Caio", "data_nascimento": "1979-03-15", "disciplina": "História", "salario": 3500},
+        {"id":2, "nome": "Lucas", "data_nascimento": "1983-11-02", "disciplina": "Matemática", "salario": 4000}
     ],
     "contador": {
         "professor_id": 3
@@ -35,7 +35,7 @@ def put_professor(professor_id, novos_dados):
     if professor is None:
         return None
 
-    for campo in ["nome", "idade", "disciplina", "data_admissao", "turma_id"]:
+    for campo in ["nome", "data_nascimento", "disciplina", "salario"]:
         if campo in novos_dados:
             professor[campo] = novos_dados[campo]
 

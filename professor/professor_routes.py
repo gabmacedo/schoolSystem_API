@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from professor_controller import listar_professores, buscar_professor, criar_professor, remover_professor, atualizar_professor
+from professor.professor_controller import listar_professores, buscar_professor, criar_professor, remover_professor, atualizar_professor
 
 professor_bp = Blueprint('professor_bp', __name__)
 
@@ -14,7 +14,7 @@ def get_professor(professor_id):
         return jsonify(professor)
     return jsonify({"erro": "Professor não encontrado"}), 404
 
-@professor_bp.route('/criar', methods=['POST'])
+@professor_bp.route('/', methods=['POST'])
 def post_professor():
     dados = request.get_json()
     resposta, status = criar_professor(dados)

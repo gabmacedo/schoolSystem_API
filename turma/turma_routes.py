@@ -1,9 +1,9 @@
 from flask import Blueprint, request
-from .turma_controller import (
+from turma.turma_controller import (
     listar_turmas, buscar_turma,
     criar_turma, remover_turma, atualizar_turma
 )
-from app_data import professores  # usa professores globais
+from professor.professor_model import dados
 
 turma_bp = Blueprint('turmas', __name__)
 
@@ -17,8 +17,9 @@ def route_buscar_turma(turma_id):
 
 @turma_bp.route('/', methods=['POST'])
 def route_criar_turma():
-    dados = request.get_json()
-    return criar_turma(dados, professores)
+    dados_turma = request.get_json()
+    professores = dados["professores"]
+    return criar_turma(dados_turma, professores)
 
 @turma_bp.route('/<int:turma_id>', methods=['DELETE'])
 def route_remover_turma(turma_id):

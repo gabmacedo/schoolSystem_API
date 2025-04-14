@@ -1,4 +1,4 @@
-from .professor_model import get_professores, get_professor_id, post_professor, delete_professor, put_professor
+from professor.professor_model import get_professores, get_professor_id, post_professor, delete_professor, put_professor
 
 def listar_professores():
     return get_professores()
@@ -7,7 +7,7 @@ def buscar_professor(professor_id):
     return get_professor_id(professor_id)
 
 def criar_professor(dados):
-    if not all(k in dados for k in ("nome", "idade", "disciplina", "data_admissao", "turma_id")):
+    if not all(k in dados for k in ("nome", "data_nascimento", "disciplina", "salario")):
         return {"erro": "Dados incompletos"}, 400
     return post_professor(dados), 201
 

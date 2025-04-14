@@ -7,7 +7,7 @@ def buscar_aluno(aluno_id):
     return get_alunos_id(aluno_id)
 
 def criar_aluno(dados):
-    if not all(k in dados for k in ("nome", "idade", "data_nascimento", "nt_prim_sem", "nt_seg_sem", "turma_id")):
+    if not all(k in dados for k in ("nome", "data_nascimento", "nota_primeiro_semestre", "nota_segundo_semestre", "turma_id")):
         return {"erro": "Dados incompletos"}, 400
     return post_aluno(dados), 201
 

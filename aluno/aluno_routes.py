@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from aluno_controller import listar_alunos, buscar_aluno, criar_aluno, remover_aluno, atualizar_aluno
+from aluno.aluno_controller import listar_alunos, buscar_aluno, criar_aluno, remover_aluno, atualizar_aluno
 
 aluno_bp = Blueprint('aluno_bp', __name__)
 
@@ -14,7 +14,7 @@ def get_aluno(aluno_id):
         return jsonify(aluno)
     return jsonify({"erro": "Aluno não encontrado"}), 404
 
-@aluno_bp.route('/criar', methods=['POST'])
+@aluno_bp.route('/', methods=['POST'])
 def post_aluno():
     dados = request.get_json()
     resposta, status = criar_aluno(dados)
