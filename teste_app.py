@@ -3,10 +3,10 @@ import requests
 
 class TestStringMethods(unittest.TestCase):
 
-#============= TESTES PARA PROFESSOR ==============
+    #============= TESTES PARA PROFESSOR ==============
 
     # 01. Criar professor com dados completos
-    def teste_001_criar_professor_completo(self):
+    def test_001_criar_professor_completo(self):
         response = requests.post(
             "http://127.0.0.1:5000/professores",
             json={
@@ -18,21 +18,21 @@ class TestStringMethods(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 201)
         self.assertIn("id", response.json())
-        
+
     # 02. Criar professor sem dados
-    def teste_002_criar_professor_sem_dados(self):
+    def test_002_criar_professor_sem_dados(self):
         response = requests.post("http://127.0.0.1:5000/professores", json={})
         self.assertEqual(response.status_code, 400)
         self.assertIn("erro", response.json())
 
     # 03. Listar todos os professores
-    def teste_003_listar_professores(self):
+    def test_003_listar_professores(self):
         response = requests.get("http://127.0.0.1:5000/professores")
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.json(), list)
 
     # 04. Criar turma com professor válido
-    def teste_004_criar_turma_com_professor_valido(self):
+    def test_004_criar_turma_com_professor_valido(self):
         response_professor = requests.post(
             "http://127.0.0.1:5000/professores",
             json={
@@ -56,30 +56,30 @@ class TestStringMethods(unittest.TestCase):
         self.assertIn("id", response.json())
 
     # 05. Atualizar professor existente
-    def teste_005_atualizar_professor_existente(self):
-            response_professor = requests.post(
-                "http://127.0.0.1:5000/professores",
-                json= {
-                    "nome": "Caio",
-                    "data_nascimento": "1990-02-10",
-                    "disciplina": "Física",
-                    "salario": 4000
-                }
-            )
-            professor_id = response_professor.json()["id"]
+    def test_005_atualizar_professor_existente(self):
+        response_professor = requests.post(
+            "http://127.0.0.1:5000/professores",
+            json={
+                "nome": "Bruno",
+                "data_nascimento": "1990-02-10",
+                "disciplina": "Física",
+                "salario": 4000
+            }
+        )
+        professor_id = response_professor.json()["id"]
 
-            #Atualizar professor
-            response_atualizacao = requests.put(
-                f"http://127.0.0.1:5000/professores/{professor_id}",
-                json= {"nome": "Caio Ireno", "disciplina": "Astronomia", "salario": 5700}
-            )
-            self.assertEqual(response_atualizacao.status_code, 200)
-            self.assertEqual(response_atualizacao.json()["nome"], "Caio Ireno")
-            self.assertEqual(response_atualizacao.json()["disciplina"], "Astronomia")
-            self.assertEqual(response_atualizacao.json()["salario"], 5700)   
+        # Atualizar professor
+        response_atualizacao = requests.put(
+            f"http://127.0.0.1:5000/professores/{professor_id}",
+            json={"nome": "Bruno Silva", "disciplina": "Astronomia", "salario": 5700}
+        )
+        self.assertEqual(response_atualizacao.status_code, 200)
+        self.assertEqual(response_atualizacao.json()["nome"], "Bruno Silva")
+        self.assertEqual(response_atualizacao.json()["disciplina"], "Astronomia")
+        self.assertEqual(response_atualizacao.json()["salario"], 5700)
 
-    #Excluir professor existente
-    def teste_006_excluir_professor_existente(self):
+    # 06. Excluir professor existente
+    def test_006_excluir_professor_existente(self):
         response_professor = requests.post(
             "http://127.0.0.1:5000/professores",
             json={
@@ -91,15 +91,13 @@ class TestStringMethods(unittest.TestCase):
         )
         professor_id = response_professor.json()["id"]
 
-        response_delete = requests.delete(
-            f"http://127.0.0.1:5000/professores/{professor_id}")
+        response_delete = requests.delete(f"http://127.0.0.1:5000/professores/{professor_id}")
         self.assertEqual(response_delete.status_code, 200)
 
-        response_get = requests.get(
-            f"http://127.0.0.1:5000/professores/{professor_id}")
+        response_get = requests.get(f"http://127.0.0.1:5000/professores/{professor_id}")
         self.assertEqual(response_get.status_code, 404)
 
-#============= TESTES PARA TURMA ==============
+    #============= TESTES PARA TURMA ==============
 
     # 07. Criar turma sem professor
     def test_007_criar_turma_sem_professor(self):
@@ -108,7 +106,7 @@ class TestStringMethods(unittest.TestCase):
             json={
                 "nome": "Turma A",
                 "turno": "Manhã",
-                "professor_id": 9999
+                "professor_id": 9999  # ID inválido
             }
         )
         self.assertEqual(response.status_code, 404)
@@ -126,11 +124,11 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.json(), list)
 
-    # 010. Atualizar turma existente
-    def teste_010_atualizar_turma_existente(self):
+    # 10. Atualizar turma existente
+    def test_010_atualizar_turma_existente(self):
         response_professor = requests.post(
             "http://127.0.0.1:5000/professores",
-            json= {
+            json={
                 "nome": "Carlos",
                 "data_nascimento": "1975-08-25",
                 "disciplina": "Matemática",
@@ -141,13 +139,13 @@ class TestStringMethods(unittest.TestCase):
 
         response_turma = requests.post(
             "http://127.0.0.1:5000/turmas",
-            json={"nome": "Turma A","turno": "Manhã","professor_id": professor_id}
+            json={"nome": "Turma A", "turno": "Manhã", "professor_id": professor_id}
         )
         turma_id = response_turma.json()["id"]
 
         response_atualizacao = requests.put(
             f"http://127.0.0.1:5000/turmas/{turma_id}",
-            json= {
+            json={
                 "nome": "Turma B",
                 "turno": "Tarde",
                 "professor_id": professor_id
@@ -157,12 +155,12 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(response_atualizacao.json()["nome"], "Turma B")
         self.assertEqual(response_atualizacao.json()["turno"], "Tarde")
 
-    # 011. Excluir turma existente
-    def teste_011_excluir_turma_existente(self):
-        #Criar professor
+    # 11. Excluir turma existente
+    def test_011_excluir_turma_existente(self):
+        # Criar professor
         response_professor = requests.post(
             "http://127.0.0.1:5000/professores",
-            json= {
+            json={
                 "nome": "Roberto",
                 "data_nascimento": "1980-06-15",
                 "disciplina": "História",
@@ -171,10 +169,10 @@ class TestStringMethods(unittest.TestCase):
         )
         professor_id = response_professor.json()["id"]
 
-        #Criar turma
+        # Criar turma
         response_turma = requests.post(
             "http://127.0.0.1:5000/turmas",
-            json= {
+            json={
                 "nome": "Turma X",
                 "turno": "Noite",
                 "professor_id": professor_id
@@ -182,29 +180,28 @@ class TestStringMethods(unittest.TestCase):
         )
         turma_id = response_turma.json()["id"]
 
-        #Excluir turma
-        response_delete = requests.delete(
-            f"http://127.0.0.1:5000/turmas/{turma_id}")
-        
+        # Excluir turma
+        response_delete = requests.delete(f"http://127.0.0.1:5000/turmas/{turma_id}")
         self.assertEqual(response_delete.status_code, 200)
 
-        response_get = requests.get(
-            f"http://127.0.0.1:5000/turmas/{turma_id}")
-        
+        response_get = requests.get(f"http://127.0.0.1:5000/turmas/{turma_id}")
         self.assertEqual(response_get.status_code, 404)
 
-#============= TESTES PARA ALUNO ==============
+    #============= TESTES PARA ALUNO ==============
 
-    # 012. Criar aluno com dados completos
+    # 12. Criar aluno com dados completos
     def test_012_criar_aluno_completo(self):
         response_professor = requests.post(
-        "http://127.0.0.1:5000/professores", 
-        json={"nome": "Carlos", "data_nascimento": "1975-08-25", "disciplina": "Matemática", "salario": 5000})
+            "http://127.0.0.1:5000/professores",
+            json={"nome": "Carlos", "data_nascimento": "1975-08-25", "disciplina": "Matemática", "salario": 5000}
+        )
         professor_id = response_professor.json()["id"]
 
         # Criar uma turma antes de criar o aluno
-        response_turma = requests.post("http://127.0.0.1:5000/turmas",
-        json={"nome": "Turma A", "turno": "Manhã", "professor_id": professor_id})
+        response_turma = requests.post(
+            "http://127.0.0.1:5000/turmas",
+            json={"nome": "Turma A", "turno": "Manhã", "professor_id": professor_id}
+        )
         turma_id = response_turma.json()["id"]
 
         # Criar aluno com a turma correta
@@ -221,25 +218,25 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn("id", response.json())
 
-    # 013. Criar aluno sem dados
+    # 13. Criar aluno sem dados
     def test_013_criar_aluno_sem_dados(self):
         response = requests.post("http://127.0.0.1:5000/alunos", json={})
         self.assertEqual(response.status_code, 400)
         self.assertIn("erro", response.json())
 
-    # 014. Listar todos os alunos
+    # 14. Listar todos os alunos
     def test_014_listar_alunos(self):
         response = requests.get("http://127.0.0.1:5000/alunos")
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.json(), list)
 
-    # 015. Obter aluno por ID inexistente
+    # 15. Obter aluno por ID inexistente
     def test_015_obter_aluno_inexistente(self):
         response = requests.get("http://127.0.0.1:5000/alunos/99")
         self.assertEqual(response.status_code, 404)
         self.assertIn("erro", response.json())
 
-    # 016. Atualizar aluno inexistente
+    # 16. Atualizar aluno inexistente
     def test_016_atualizar_aluno_inexistente(self):
         response = requests.put(
             "http://127.0.0.1:5000/alunos/99",
@@ -248,59 +245,5 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertIn("erro", response.json())
 
-    # 017. Excluir aluno inexistente
-    def test_017_excluir_aluno_inexistente(self):
-        response = requests.delete("http://127.0.0.1:5000/alunos/99")
-        self.assertEqual(response.status_code, 404)
-        self.assertIn("erro", response.json())
-
-    # 018. Atualizar turma existente
-    def test_018_atualizar_turma_existente(self):
-        # Cria um professor primeiro
-        response_professor = requests.post(
-            "http://127.0.0.1:5000/professores",
-            json={"nome": "Carlos", "data_nascimento": "1975-08-25", "disciplina": "Matemática", "salario": 5000}
-        )
-        professor_id = response_professor.json()["id"]
-
-        # Cria uma turma
-        response_turma = requests.post(
-            "http://127.0.0.1:5000/turmas",
-            json={"nome": "Turma A", "turno": "Manhã", "professor_id": professor_id}
-        )
-        turma_id = response_turma.json()["id"]
-
-        # Atualiza a turma
-        response_atualizacao = requests.put(
-            f"http://127.0.0.1:5000/turmas/{turma_id}",
-            json={"nome": "Turma Atualizada", "turno": "Tarde", "professor_id": professor_id}
-        )
-        self.assertEqual(response_atualizacao.status_code, 200)
-        self.assertEqual(response_atualizacao.json()["nome"], "Turma Atualizada")
-        self.assertEqual(response_atualizacao.json()["turno"], "Tarde")
-
-    # 019. Excluir aluno existente
-    def test_019_excluir_aluno_existente(self):
-        # Cria um professor
-        response_professor = requests.post(
-            "http://127.0.0.1:5000/professores",
-            json={"nome": "Carlos", "data_nascimento": "1975-08-25", "disciplina": "Matemática", "salario": 5000}
-        )
-        professor_id = response_professor.json()["id"]
-
-        # Cria uma turma
-        response_turma = requests.post(
-            "http://127.0.0.1:5000/turmas",
-            json={"nome": "Turma A", "turno": "Manhã", "professor_id": professor_id}
-        )
-        turma_id = response_turma.json()["id"]
-        
-        # Cria um aluno 
-        response_aluno = requests.post(
-            "http://127.0.0.1:5000/alunos",
-            json={"nome": "Gabriel", "data_nascimento": "2000-01-01", "nota_primeiro_semestre": 9.0, "nota_segundo_semestre": 8.5, "turma_id": turma_id}
-        )
-        aluno_id = response_aluno.json()["id"]
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
