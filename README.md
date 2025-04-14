@@ -2,19 +2,39 @@
 Este projeto é uma API RESTful desenvolvida com Flask, focada na gestão de alunos, professores e turmas. Ele implementa operações CRUD para cada entidade e segue os princípios do TDD (Test-Driven Development). Ideal para fins acadêmicos e prática de arquitetura MVC.
 
 <h1>🚀 Funcionalidades</h1>
-✅ Cadastro, listagem, busca, atualização e exclusão de alunos
-✅ Suporte a endpoints para professores e turmas
-✅ Organização no padrão MVC
-✅ Testes unitários com unittest
-✅ Testes de API com requests
+✅ Cadastro, listagem, busca, atualização e exclusão de alunos<br>
+✅ Suporte a endpoints para professores e turmas<br>
+✅ Organização no padrão MVC<br>
+✅ Testes unitários com unittest<br>
+✅ Testes de API com requests<br>
 
-<h1>📋 Tecnologias</h1>
+<h1>🛠 Tecnologias Utilizadas</h1>
 Este projeto utiliza as seguintes tecnologias:
 
-Python 3.1x<br>
-Flask<br>
-unittest<br>
-requests<br>
+- <strong>Python</strong><br>
+- <strong>Flask</strong><br>
+- <strong>unittest</strong><br>
+- <strong>requests</strong><br>
+
+<h1>📁 Estrutura do Projeto</h1>
+O projeto está organizado da seguinte forma:<br>
+📂 SchoolSystem_DevAPI<br>
+ ┣ 📂 aluno<br>
+ ┃ ┣ 📄 aluno_controller.py<br>
+ ┃ ┣ 📄 aluno_model.py<br>
+ ┃ ┗ 📄 aluno_routes.py<br>
+ ┣ 📂 professor<br>
+ ┃ ┣ 📄 professor_controller.py<br>
+ ┃ ┣ 📄 professor_model.py<br>
+ ┃ ┗ 📄 professor_routes.py<br>
+ ┣ 📂 turma<br>
+ ┃ ┣📄 turma_controller.py<br>
+ ┃ ┣📄 turma_model.py<br>
+ ┃ ┗📄 turma_routes.py<br>
+ ┣📄app.py<br>
+ ┣📄config.py<br>
+ ┣📄teste_app.py<br>
+ ┣📄requirements.txt<br>
 
 <h1>🎯 Observações</h1> 
  - O projeto não utiliza banco de dados, armazenando os dados em listas.<br>
