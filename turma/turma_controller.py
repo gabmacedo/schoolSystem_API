@@ -1,30 +1,76 @@
-from .turma_model import get_turmas, get_turma_id, post_turma, delete_turma, put_turma
+from flask import request, jsonify
+from config import db
+from turma.turma_model import Turma
+from professor.professor_model import Professor
 
 def listar_turmas():
-    return get_turmas()
+    turmas = Turma.query.all()
+    return jsonify([t.to_dict() for t in turmas]), 200
 
 def buscar_turma(turma_id):
-    turma = get_turma_id(turma_id)
+    turma = Turma.query.get(turma_id)
     if turma:
-        return turma, 200
-    return {"erro": "Turma não encontrada"}, 404
+        return jsonify(turma.to_dict()), 200
+    return jsonify({"erro": "Turma não encontrada"}), 404
 
-def criar_turma(dados, professores):
-    if not all(k in dados for k in ("nome", "turno", "professor_id")):
-        return {"erro": "Dados incompletos"}, 400
+def criar_turma():
+    dados = request.get_json()
 
-    if not any(p["id"] == dados["professor_id"] for p in professores):
-        return {"erro": "Professor não encontrado"}, 404
+    campos_obrigatorios = ['nome', 'descricao', 'ativo', 'professor_id']
+    for campo in campos_obrigatorios:
+        if campo not in dados:
+            return jsonify({"erro": f"Campo obrigatório '{campo}' não enviado"}), 400
+        
+    professor = Professor.query.get(dados['professor_id'])
+    if not professor:
+        return jsonify({"erro": "Professor não encontrado"}), 404
 
-    return post_turma(dados), 201
+    try:
+        nova_turma = Turma(
+            nome=dados['nome'],
+            descricao=dados['descricao'],
+            ativo=dados['ativo'],
+            professor_id=dados['professor_id']
+        )
+        db.session.add(nova_turma)
+        db.session.commit()
+        return jsonify(nova_turma.to_dict()), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"erro": str(e)}), 500
+
+def atualizar_turma(turma_id):
+    turma = Turma.query.get(turma_id)
+    if not turma:
+        return jsonify({"erro": "Turma não encontrada"}), 404
+
+    dados = request.get_json()
+
+    try:
+        if 'nome' in dados:
+            turma.nome = dados['nome']
+        if 'descricao' in dados:
+            turma.descricao = dados['descricao']
+        if 'ativo' in dados:
+            turma.ativo = dados['ativo']
+        if 'professor_id' in dados:
+            turma.professor_id = dados['professor_id']
+
+        db.session.commit()
+        return jsonify(turma.to_dict()), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"erro": str(e)}), 500
 
 def remover_turma(turma_id):
-    if delete_turma(turma_id):
-        return {"mensagem": "Turma removida com sucesso"}, 200
-    return {"erro": "Turma não encontrada"}, 404
+    turma = Turma.query.get(turma_id)
+    if not turma:
+        return jsonify({"erro": "Turma não encontrada"}), 404
 
-def atualizar_turma(turma_id, dados):
-    turma_atualizada = put_turma(turma_id, dados)
-    if turma_atualizada:
-        return turma_atualizada, 200
-    return {"erro": "Turma não encontrada"}, 404
+    try:
+        db.session.delete(turma)
+        db.session.commit()
+        return jsonify({"mensagem": "Turma removida com sucesso"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"erro": str(e)}), 500

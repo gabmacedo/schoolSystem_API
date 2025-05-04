@@ -1,23 +1,77 @@
-from .aluno_model import get_alunos, get_alunos_id, post_aluno, delete_aluno, put_aluno
+from flask import jsonify, request
+from config import db
+from aluno.aluno_model import Aluno
+from datetime import datetime
 
 def listar_alunos():
-    return get_alunos()
+    alunos = Aluno.query.all()
+    return jsonify([aluno.to_dict() for aluno in alunos]), 200
 
 def buscar_aluno(aluno_id):
-    return get_alunos_id(aluno_id)
+    aluno = Aluno.query.get(aluno_id)
+    if aluno:
+        return jsonify(aluno.to_dict()), 200
+    else:
+        return jsonify({"erro": "Aluno não encontrado"}), 404
 
-def criar_aluno(dados):
-    if not all(k in dados for k in ("nome", "data_nascimento", "nota_primeiro_semestre", "nota_segundo_semestre", "turma_id")):
-        return {"erro": "Dados incompletos"}, 400
-    return post_aluno(dados), 201
+def criar_aluno():
+    dados = request.get_json()
+
+    campos_obrigatorios = ['nome', 'data_nascimento', 'nota_primeiro_semestre', 'nota_segundo_semestre', 'turma_id']
+    for campo in campos_obrigatorios:
+        if campo not in dados:
+            return jsonify({"erro": f"Campo obrigatório '{campo}' não enviado"}), 400
+        
+    try:
+        novo_aluno = Aluno(
+            nome=dados['nome'],
+            data_nascimento=datetime.strptime(dados['data_nascimento'], '%Y-%m-%d').date(),
+            nota_primeiro_semestre=dados['nota_primeiro_semestre'],
+            nota_segundo_semestre=dados['nota_segundo_semestre'],
+            turma_id=dados['turma_id']
+        )
+        db.session.add(novo_aluno)
+        db.session.commit()
+        return jsonify(novo_aluno.to_dict()), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"erro": str(e)}), 500
+    
+
+def atualizar_aluno(aluno_id):
+    aluno = Aluno.query.get(aluno_id)
+    if not aluno:
+        return jsonify({"erro": "Aluno não encontrado"}), 404
+
+    dados = request.get_json()
+
+    try:
+        if 'nome' in dados:
+            aluno.nome = dados['nome']
+        if 'data_nascimento' in dados:
+            aluno.data_nascimento = datetime.strptime(dados['data_nascimento'], '%Y-%m-%d').date()
+        if 'nota_primeiro_semestre' in dados:
+            aluno.nota_primeiro_semestre = dados['nota_primeiro_semestre']
+        if 'nota_segundo_semestre' in dados:
+            aluno.nota_segundo_semestre = dados['nota_segundo_semestre']
+        if 'turma_id' in dados:
+            aluno.turma_id = dados['turma_id']
+
+        db.session.commit()
+        return jsonify(aluno.to_dict()), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"erro": str(e)}), 500
 
 def remover_aluno(aluno_id):
-    if delete_aluno(aluno_id):
-        return {"mensagem": "Aluno removido"}, 200
-    return {"erro": "Aaluno não encontrado"}, 404
+    aluno = Aluno.query.get(aluno_id)
+    if not aluno:
+        return jsonify({"erro": "Aluno não encontrado"}), 404
 
-def atualizar_aluno(aluno_id, dados):
-    aluno_atualizado = put_aluno(aluno_id, dados)
-    if aluno_atualizado:
-        return aluno_atualizado, 200
-    return {"erro": "Aluno não encontrado"}, 404
+    try:
+        db.session.delete(aluno)
+        db.session.commit()
+        return jsonify({"mensagem": "Aluno removido com sucesso"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"erro": str(e)}), 500

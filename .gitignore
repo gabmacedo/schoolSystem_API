@@ -1,41 +1,31 @@
-# Byte-compiled / cache / logs
-__pycache__/
-*.py[cod]
-*.log
-
-# Virtual environment
+# Ambientes virtuais
 venv/
+VENV/
 env/
-.venv/
 ENV/
+.venv/
+.VENV/
+.ENV/
+.pyvenv.cfg
 
-# Editor configs
+# Configs de IDE
 .vscode/
 .idea/
-*.swp
 
-# Sistema operacional
-.DS_Store
-Thumbs.db
+# Arquivos Python compilados
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Bancos de dados e arquivos temporários
+*.sqlite3
+*.db
+*.log
 
 # Arquivos de ambiente
 .env
+.env.*
 
-# Banco de dados SQLite (se houver)
-*.sqlite3
-
-# Arquivos de testes temporários
-*.coverage
-htmlcov/
-.tox/
-.pytest_cache/
-
-# Arquivos de build
-dist/
-build/
-*.egg-info/
-
-# Arquivos de configurações pessoais
-*.db
-*.bak
-*.orig
+# Outros
+.DS_Store
+Thumbs.db

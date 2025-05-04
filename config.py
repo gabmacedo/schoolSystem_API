@@ -1,8 +1,4 @@
-import os
-from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
-
-app = Flask(__name__)
-app.config['HOST'] = '127.0.0.1'
-app.config['PORT']=5000
-app.config['DEBUG'] = True
+# Criação do db como uma variável global
+db = SQLAlchemy()
