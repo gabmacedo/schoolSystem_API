@@ -1,42 +1,24 @@
-dados = {
-    "professores": [
-        {"id":1, "nome": "Caio", "data_nascimento": "1979-03-15", "disciplina": "História", "salario": 3500},
-        {"id":2, "nome": "Lucas", "data_nascimento": "1983-11-02", "disciplina": "Matemática", "salario": 4000}
-    ],
-    "contador": {
-        "professor_id": 3
-    }
-}
+from config import db
+from datetime import date
 
-def get_professores():
-    return dados["professores"]
+class Professor(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    data_nascimento = db.Column(db.String(10), nullable=False)
+    disciplina = db.Column(db.String(100), nullable=False)
+    salario = db.Column(db.Float, nullable=False)
 
-def get_professor_id(professor_id):
-    for professor in dados["professores"]:
-        if professor["id"] == professor_id:
-            return professor
-    return None
+    def calcular_idade(self):
+        ano, mes, dia = map(int, self.data_nascimento.split('-'))
+        hoje = date.today()
+        idade = hoje.year - ano - ((hoje.month, hoje.day) < (mes, dia))
+        return idade
 
-def post_professor(novo_professor):
-    novo_professor["id"] = dados["contador"]["professor_id"]
-    dados["professores"].append(novo_professor)
-    dados["contador"]["professor_id"] += 1
-    return novo_professor
-
-def delete_professor(professor_id):
-    professor = get_professor_id(professor_id)
-    if professor:
-        dados["professores"].remove(professor)
-        return True
-    return False
-
-def put_professor(professor_id, novos_dados):
-    professor = get_professor_id(professor_id)
-    if professor is None:
-        return None
-
-    for campo in ["nome", "data_nascimento", "disciplina", "salario"]:
-        if campo in novos_dados:
-            professor[campo] = novos_dados[campo]
-
-    return professor
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "idade": self.calcular_idade(),
+            "disciplina": self.disciplina,
+            "salario": self.salario
+        }
