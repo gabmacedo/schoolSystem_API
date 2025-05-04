@@ -17,7 +17,7 @@ Este projeto é uma API RESTful desenvolvida com <strong>Flask</strong>, focada 
 <li><strong>🌐 Flask</strong><br></li>
 <li><strong>🗃️ Flask SQLAlchemy</strong><br></li>
 <li><strong>🧩 SQLite</strong><br></li>
-<li><strong>📄 Swagger</strong><br></li>
+<li><strong>📄 Swagger (flask-restx)</strong><br></li>
 <li><strong>🐳 Docker</strong><br></li>
 <li><strong>🚀 Render (Deploy)</strong><br></li>
 <li><strong>🧪 unittest</strong><br></li>
