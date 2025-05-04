@@ -9,8 +9,6 @@ Este projeto é uma API RESTful desenvolvida com Flask, focada na gestão de alu
 ✅ Testes de API com requests<br>
 
 <h1>🛠 Tecnologias Utilizadas</h1>
-Este projeto utiliza as seguintes tecnologias:
-
 - <strong>Python</strong><br>
 - <strong>Flask</strong><br>
 - <strong>unittest</strong><br>
