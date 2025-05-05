@@ -5,17 +5,17 @@ professores_ns = Namespace("professores", description="Operações relacionadas 
 
 professor_model = professores_ns.model("Professor", {
     "nome": fields.String(required=True, description="Nome do professor"),
-    "data_nascimento": fields.String(required=True, description="Data de nascimento (YYYY-MM-DD)"),
-    "disciplina": fields.String(required=True, description="Disciplina ensinada"),
-    "salario": fields.Float(required=True, description="Salário")
+    "materia": fields.String(required=True, description="Materia do professor"),
+    "observacoes": fields.String(required=True, description="Observações sobre o professor"),
+    "idade": fields.Float(required=True, description="Idade do professor")
 })
 
 professor_output_model = professores_ns.model("ProfessorOutput", {
     "id": fields.Integer(description="ID do professor"),
     "nome": fields.String(description="Nome do professor"),
-    "idade": fields.Integer(description="Idade do professor"),
-    "disciplina": fields.String(description="Disciplina"),
-    "salario": fields.Float(description="Salário")
+    "materia": fields.Integer(description="Matéria lecionada"),
+    "observacoes": fields.String(description="Observações sobre o professor"),
+    "idade": fields.Float(description="Idade do professor")
 })
 
 @professores_ns.route("/")
@@ -40,12 +40,12 @@ class ProfessorIdResource(Resource):
     
     @professores_ns.expect(professor_model)
     def put(self, id_professor):
-        """Atualiza um professo"""
+        """Atualiza um professor por ID"""
         data = professores_ns.payload
         atualizar_professor(id_professor, data)
         return buscar_professor(id_professor), 200
     
     def delete(self, id_professor):
-        """Deleta um professor"""
+        """Deleta um professor por ID"""
         remover_professor(id_professor)
         return {"message": "Professor excluido com sucesso"}, 200
