@@ -24,7 +24,7 @@ def criar_professor():
         novo = Professor(
             nome=dados['nome'],
             materia=dados['materia'],
-            observacoes=dados.get['observacoes', ''],
+            observacoes=dados.get('observacoes', ''),
             idade=dados['idade']
         )
         db.session.add(novo)
