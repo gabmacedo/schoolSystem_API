@@ -15,7 +15,7 @@ def buscar_professor(professor_id):
 
 def criar_professor():
     dados = request.get_json()
-    campos = ['nome', 'data_nascimento', 'disciplina', 'salario']
+    campos = ['nome', 'materia', 'observacoes', 'idade']
     for campo in campos:
         if campo not in dados:
             return jsonify({"erro": f"Campo obrigatório '{campo}' não enviado"}), 400
@@ -23,9 +23,9 @@ def criar_professor():
     try:
         novo = Professor(
             nome=dados['nome'],
-            data_nascimento=datetime.strptime(dados['data_nascimento'], '%Y-%m-%d').date(),
-            disciplina=dados['disciplina'],
-            salario=float(dados['salario'])
+            materia=dados['materia'],
+            observacoes=dados.get['observacoes', ''],
+            idade=dados['idade']
         )
         db.session.add(novo)
         db.session.commit()
@@ -40,21 +40,17 @@ def atualizar_professor(professor_id):
         return jsonify({"erro": "Professor não encontrado"}), 404
 
     dados = request.get_json()
-    try:
-        if 'nome' in dados:
-            professor.nome = dados['nome']
-        if 'data_nascimento' in dados:
-            professor.data_nascimento=datetime.strptime(dados['data_nascimento'], '%Y-%m-%d').date()
-        if 'disciplina' in dados:
-            professor.disciplina = dados['disciplina']
-        if 'salario' in dados:
-            professor.salario = float(dados['salario'])
 
+    professor.nome = dados.get('nome', professor.nome)
+    professor.materia = dados.get('materia', professor.materia)
+    professor.observacoes = dados.get('observacoes', professor.observacoes)
+    professor.idade = dados.get('idade', professor.idade)
+
+    try:
         db.session.commit()
         return jsonify(professor.to_dict()), 200
     except Exception as e:
-        db.session.rollback()
-        return jsonify({"erro": str(e)}), 500
+        return jsonify({"erro": f"Erro ao atualizar professor: {str(e)}"}), 500
 
 def remover_professor(professor_id):
     professor = Professor.query.get(professor_id)

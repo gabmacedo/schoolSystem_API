@@ -5,6 +5,6 @@ api = Api(
     title="API de Gestão Escolar",
     description="Documentação da API para Alunos, Professores e Turmas",
     doc="/docs",
-    mask_swagger=False,
-    prefix="/api"
+    prefix="",
+    mask_swagger=False
 )
