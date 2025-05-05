@@ -29,8 +29,7 @@ class TurmaResource(Resource):
     @turma_ns.expect(turma_model)
     def post(self):
         """Cria uma turma"""
-        data = turma_ns.payload
-        return criar_turma(data)
+        return criar_turma()
     
 @turma_ns.route("<int:id_turma>")
 class TurmaIdResource(Resource):

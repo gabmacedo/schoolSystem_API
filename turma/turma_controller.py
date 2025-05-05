@@ -14,30 +14,36 @@ def buscar_turma(turma_id):
     return jsonify({"erro": "Turma não encontrada"}), 404
 
 def criar_turma():
-    dados = request.get_json()
-
+    dados = request.get_json()  # <-- agora ela busca os dados internamente
     campos_obrigatorios = ['nome', 'descricao', 'ativo', 'professor_id']
     for campo in campos_obrigatorios:
         if campo not in dados:
-            return jsonify({"erro": f"Campo obrigatório '{campo}' não enviado"}), 400
-        
+            return {"erro": f"Campo obrigatório '{campo}' não enviado"}, 400
+
     professor = Professor.query.get(dados['professor_id'])
     if not professor:
-        return jsonify({"erro": "Professor não encontrado"}), 404
+        return {"erro": "Professor não encontrado"}, 404
 
     try:
+        print("Dados recebidos para criar a turma:", dados)
+
         nova_turma = Turma(
             nome=dados['nome'],
             descricao=dados['descricao'],
             ativo=dados['ativo'],
             professor_id=dados['professor_id']
         )
+
         db.session.add(nova_turma)
         db.session.commit()
-        return jsonify(nova_turma.to_dict()), 201
+
+        turma_salva = Turma.query.get(nova_turma.id)
+        print("Turma salva no banco após commit:", turma_salva.to_dict())
+
+        return turma_salva.to_dict(), 201
     except Exception as e:
         db.session.rollback()
-        return jsonify({"erro": str(e)}), 500
+        return {"erro": str(e)}, 500
 
 def atualizar_turma(turma_id):
     turma = Turma.query.get(turma_id)
