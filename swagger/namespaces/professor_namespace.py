@@ -28,24 +28,24 @@ class ProfessoresResource(Resource):
     @professores_ns.expect(professor_model)
     def post(self):
         """Cria um professor"""
-        data = professores_ns.payload
-        return criar_professor(data)
+        dados = professores_ns.payload
+        return criar_professor(dados)
     
 @professores_ns.route("/<int:id_professor>")    
 class ProfessorIdResource(Resource):
     @professores_ns.marshal_with(professor_output_model)
     def get(self, id_professor):
-        """Busca um professor por ID"""
+        """Busca professor por ID"""
         return buscar_professor(id_professor)
     
     @professores_ns.expect(professor_model)
     def put(self, id_professor):
-        """Atualiza um professor por ID"""
-        data = professores_ns.payload
-        atualizar_professor(id_professor, data)
+        """Atualiza professor por ID"""
+        dados = professores_ns.payload
+        atualizar_professor(id_professor, dados)
         return buscar_professor(id_professor), 200
     
     def delete(self, id_professor):
-        """Deleta um professor por ID"""
+        """Deleta professor por ID"""
         remover_professor(id_professor)
-        return {"message": "Professor excluido com sucesso"}, 200
+        return {"message": "Professor excluido com sucesso!"}, 200
