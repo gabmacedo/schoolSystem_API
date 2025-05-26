@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return {"mensagem": "API rodando com sucesso!"}
+    return {"mensagem": "API rodando com sucesso!"}, 200
 
 # Configuração do Flask
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
